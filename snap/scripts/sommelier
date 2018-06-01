@@ -18,6 +18,9 @@ function install_app() {
     env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" "${TMPDIR}/${INSTALL_EXE}" /silent
     # Removes the cached installer
     rm -v "${TMPDIR}/${INSTALL_EXE}"
+
+    # Launch after install.
+    launch_app
   fi
 }
 
@@ -187,5 +190,4 @@ elif [ -e "${WINE_EXE}" ]; then
   launch_app
 else
   install_app
-  launch_app
 fi
