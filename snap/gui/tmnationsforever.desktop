@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=TmNationsForever
+Comment=Track Mania Nations Forever
+Exec=tmnationsforever
+Icon=${SNAP}/meta/gui/tmnationsforever.png
+Categories=Game;
+Terminal=false
+StartupNotify=true
+StartupWMClass=tmforeverlauncher.exe
+Keywords=game

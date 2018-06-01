@@ -1,0 +1,191 @@
+#!/bin/bash
+
+function install_app() {
+  # Install additional requirements via winetricks here
+  if [ -n "${TRICKS}" ]; then
+    for TRICK in "${TRICKS}"; do
+      env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINETRICKS}" --gui --unattended ${TRICK}
+    done
+  fi
+
+  # Modify or remove this as required by your application.
+  if [ -n "${INSTALL_URL}" ]; then
+    # Downloads a file with progress using wget and yad
+    wget "${INSTALL_URL}" -O "${TMPDIR}/${INSTALL_EXE}" 2>&1 | \
+    perl -p -e '$| = 1; s/^.* +([0-9]+%) +([0-9,.]+[GMKB]) +([0-9hms,.]+).*$/\1\n# Downloading... \2 (\3)/' | \
+    yad --progress --title="${INSTALL_EXE}" --width=400 --center --no-buttons --auto-close --auto-kill --on-top
+    # Installs the wine application
+    env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" "${TMPDIR}/${INSTALL_EXE}" /silent
+    # Removes the cached installer
+    rm -v "${TMPDIR}/${INSTALL_EXE}"
+  fi
+}
+
+function launch_app() {
+  # Suppress pop-ups about graphics performance by faking the results
+  mkdir -p "${WINEPREFIX}/drive_c/users/${USER}/My Documents/TmForever/Config"
+  touch "${WINEPREFIX}/drive_c/users/${USER}/My Documents/TmForever/Config/GfxDevicePerfs.txt"
+
+  # If we don't change into the program directory some assets may not be found
+  cd "${WINE_DIR}"
+  env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" "${WINE_EXE}"
+}
+
+function prepend_dir() {
+  local var="$1"
+  local dir="$2"
+  if [ -d "$dir" ]; then
+    eval "export $var=\"\$dir\${$var:+:\$$var}\""
+  fi
+}
+
+function append_dir() {
+  local var="$1"
+  local dir="$2"
+  if [ -d "$dir" ]; then
+    eval "export $var=\"\${$var:+\$$var:}\$dir\""
+  fi
+}
+
+# Get the executable we're being asked to launch
+if [ -n "${1}" ]; then
+  WINE_EXE="${1}"
+  WINE_DIR=$(dirname "${WINE_EXE}")
+else
+  echo "ERROR! I need an executable that I should launch. Exitting here."
+  exit 1
+fi
+
+# If we've been given and installer URL derive the filename
+if [ -n "${INSTALL_URL}" ]; then
+  INSTALL_EXE=$(basename "${INSTALL_URL}")
+fi
+
+# On Fedora $SNAP is under /var and there is some magic to map it to /snap.
+# # We need to handle that case and reset $SNAP
+SNAP=`echo $SNAP | sed -e "s|/var/lib/snapd||g"`
+
+ARCH="i386-linux-gnu"
+export WINEARCH="win32"
+export WINEVERPATH=$SNAP
+export WINESERVER=$SNAP/bin/wineserver
+export WINELOADER=$SNAP/bin/wine
+export WINETRICKS=$SNAP/bin/winetricks
+export winepath=$SNAP/bin/winepath
+export WINEDLLPATH=$SNAP/lib/wine/fakedlls
+export WINEPREFIX="$SNAP_USER_COMMON/.wine"
+# Prevent the pop-ups about Wine Mono and Wine Gecko
+export WINEDLLOVERRIDES="mscoree,mshtml="
+#export WINEDEBUG=-all
+export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/lib/$ARCH:$SNAP/usr/lib:$SNAP/usr/lib/$ARCH:$LD_LIBRARY_PATH"
+
+# XKB config
+export XKB_CONFIG_ROOT=$SNAP/usr/share/X11/xkb
+
+# Give XOpenIM a chance to locate locale data.
+# This is required for text input to work in SDL2 games.
+export XLOCALEDIR=$SNAP/usr/share/X11/locale
+
+# Set XCursors path
+export XCURSOR_PATH=$SNAP/usr/share/icons
+
+# Mesa Libs for OpenGL support
+append_dir LD_LIBRARY_PATH $SNAP/usr/lib/$ARCH/mesa
+append_dir LD_LIBRARY_PATH $SNAP/usr/lib/$ARCH/mesa-egl
+
+# Tell libGL where to find the drivers
+export LIBGL_DRIVERS_PATH=$SNAP/usr/lib/$ARCH/dri
+append_dir LD_LIBRARY_PATH $LIBGL_DRIVERS_PATH
+
+# Workaround in snapd for proprietary nVidia drivers mounts the drivers in
+# /var/lib/snapd/lib/gl that needs to be in LD_LIBRARY_PATH
+# Without that OpenGL using apps do not work with the nVidia drivers.
+# Ref.: https://bugs.launchpad.net/snappy/+bug/1588192
+append_dir LD_LIBRARY_PATH /var/lib/snapd/lib/gl
+
+# Pulseaudio export
+append_dir LD_LIBRARY_PATH $SNAP/usr/lib/$ARCH/pulseaudio
+
+# Tell GStreamer where to find its plugins
+export GST_PLUGIN_PATH=$SNAP/usr/lib/$ARCH/gstreamer-1.0
+export GST_PLUGIN_SYSTEM_PATH=$SNAP/usr/lib/$ARCH/gstreamer-1.0
+# gst plugin scanner doesn't install in the correct path: https://github.com/ubuntu/snapcraft-desktop-helpers/issues/43
+export GST_PLUGIN_SCANNER=$SNAP/usr/lib/$ARCH/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner
+
+# XDG Config
+prepend_dir XDG_CONFIG_DIRS $SNAP/etc/xdg
+
+# Define snaps' own data dir
+prepend_dir XDG_DATA_DIRS $SNAP/usr/share
+prepend_dir XDG_DATA_DIRS $SNAP_USER_COMMON
+
+export HOME=$SNAP_USER_COMMON
+
+# Set XDG_DATA_HOME to local path
+export XDG_DATA_HOME=$SNAP_USER_COMMON/.local/share
+mkdir -p $XDG_DATA_HOME
+
+# Workaround for GLib < 2.53.2 not searching for schemas in $XDG_DATA_HOME:
+#   https://bugzilla.gnome.org/show_bug.cgi?id=741335
+prepend_dir XDG_DATA_DIRS $XDG_DATA_HOME
+
+# Set cache folder to local path
+export XDG_CACHE_HOME=$SNAP_USER_COMMON/.cache
+mkdir -p $XDG_CACHE_HOME
+
+# Set config folder to local path
+export XDG_CONFIG_HOME=$SNAP_USER_COMMON/.config
+mkdir -p $XDG_CONFIG_HOME
+
+# Create $XDG_RUNTIME_DIR if not exists (to be removed when LP: #1656340 is fixed)
+[ -n "$XDG_RUNTIME_DIR" ] && mkdir -p $XDG_RUNTIME_DIR -m 700
+
+# Make PulseAudio socket available inside the snap-specific $XDG_RUNTIME_DIR
+if [ -n "$XDG_RUNTIME_DIR" ]; then
+    pulsenative="pulse/native"
+    pulseaudio_sockpath="$XDG_RUNTIME_DIR/../$pulsenative"
+    if [ -S "$pulseaudio_sockpath" ]; then
+        export PULSE_SERVER="unix:${pulseaudio_sockpath}"
+    fi
+fi
+
+# Font Config and themes
+export FONTCONFIG_PATH=$SNAP/etc/fonts/conf.d
+#export FONTCONFIG_FILE=$XDG_CONFIG_HOME/fontconfig/fonts.conf
+
+# Gdk-pixbuf loaders
+export GDK_PIXBUF_MODULE_FILE=$XDG_CACHE_HOME/gdk-pixbuf-loaders.cache
+export GDK_PIXBUF_MODULEDIR=$SNAP/usr/lib/$ARCH/gdk-pixbuf-2.0/2.10.0/loaders
+if [ -f $SNAP/usr/lib/$ARCH/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders ] && [ ! -f "${GDK_PIXBUF_MODULE_FILE}" ]; then
+  $SNAP/usr/lib/$ARCH/gdk-pixbuf-2.0/gdk-pixbuf-query-loaders > $GDK_PIXBUF_MODULE_FILE
+fi
+
+# Stop wine from updating $WINEPREFIX automatically
+if [ -f "${WINEPREFIX}/.update-timestamp" ]; then
+  chkstmp=$(grep disable "${WINEPREFIX}/.update-timestamp" | wc -l)
+  if [ $chkstmp -eq 0 ]; then
+    echo "disable" > "${WINEPREFIX}/.update-timestamp"
+  fi
+fi
+
+# Initialise wine
+if [ ! -f "${WINEPREFIX}/drive_c/windows/win.ini" ]; then
+  env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" wineboot --init 2>&1 | \
+  yad --progress --title="Preparing Windows environment" --width=400 --center --no-buttons --auto-close --auto-kill --on-top --pulsate
+  # Opt out of winetricks metrics - we ninja this to avoid dialogs
+  if [ ! -f "${XDG_CACHE_HOME}/winetricks/track_usage" ]; then
+    mkdir -p "${XDG_CACHE_HOME}/winetricks"
+    echo 0 > "${XDG_CACHE_HOME}/winetricks/track_usage"
+  fi
+fi
+
+# Launch wineboot/winecfg/winetricks if requested.
+# If the executable exists then launch it otherwise install it then lauch it.
+if [[ ${WINE_EXE} = *"winecfg"* ]] || [[ ${WINE_EXE} = *"wineboot"* ]] || [[ ${WINE_EXE} = *"winetricks"* ]]; then
+  env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "$@"
+elif [ -e "${WINE_EXE}" ]; then
+  launch_app
+else
+  install_app
+  launch_app
+fi
