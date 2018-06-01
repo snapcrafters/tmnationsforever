@@ -24,7 +24,26 @@ distributions.</p>
 
 ## Reusing this snap
 
-*In progress...*
+You can use this snap as a reference for creating snaps of other WINE
+compatible Windows applications. Here are the main things you'll need to
+modify:
 
-If you have any questions about creating snaps of WINE compatible Windows 
+  * Change the meta data and `apps:` and `parts:` names from `tmnationsforever`.
+  * Modify the `command:` to reference the executable the application/game should launch.
+  * If you can't redistrbute the application/game use `INSTALL_URL:` to reference a web accessible installer.
+  * Modify the `install_app()` and `launch_app()` functions in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
+  * If your application/game requires some winetricks to work then you can specify them via `TRICKS:` in the `environment:` of the main `command:`. For example:
+
+```
+    environment:
+      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
+      TRICKS: "winxp corefonts d3dx9_43"
+      LC_ALL: "C.UTF-8"
+```
+
+One other point of interest is that `yad` is staged in the snap and a faux
+`zenity` script is included that execs `yad`. We do this because `yad` is
+argument compatible with `zenity` but pulls far fewer package dependencies.
+
+If you have any questions about creating snaps of WINE compatible Windows
 applications then [post in the Snapcraft forum](https://forum.snapcraft.io).
