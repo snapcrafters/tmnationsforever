@@ -211,6 +211,7 @@ parts:
       - unzip:i386              # winetricks
       - wget:i386               # winetricks
       - yad:i386                # winetricks
+      - x11-xserver-utils:i386  # for xrandr to set virtual desktop
     override-build: |
       snapcraftctl build
       rm -rf $SNAPCRAFT_PART_INSTALL/etc/init
