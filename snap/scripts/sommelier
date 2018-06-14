@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 TITLE="TrackMania Nations Forever"
 NOTICE="The ${TITLE} snap is experimental, built
 with development releases of upstream WINE and may not function as
@@ -85,6 +86,7 @@ fi
 # # We need to handle that case and reset $SNAP
 SNAP=`echo $SNAP | sed -e "s|/var/lib/snapd||g"`
 
+export GTK_MODULES=""
 export WINEARCH="win32"
 if [ "${WINEARCH}" == "win32" ]; then
   ARCH="i386-linux-gnu"
@@ -203,7 +205,7 @@ fi
 # Initialise wine
 if [ ! -f "${WINEPREFIX}/drive_c/windows/win.ini" ]; then
   # Splash
-  yad --timeout=15 --timeout-indicator=bottom --text="${NOTICE}" --no-escape --width=460 --center --no-buttons --splash &
+  yad --timeout=15 --timeout-indicator=bottom --text="${NOTICE}" --no-escape --width=460 --center --no-buttons --splash --on-top &
   # Create the WINE environment
   env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" wineboot --init 2>&1 | \
   yad --progress --title="Preparing Windows environment" --width=400 --center --no-buttons --auto-close --auto-kill --on-top --pulsate
