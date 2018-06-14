@@ -233,6 +233,7 @@ parts:
       - libgdk-pixbuf2.0-0:i386 # yad
       - libgtk-3-0:i386         # yad
       - libnotify4:i386         # yad
+      - libnotify-bin:i386      # sommelier
       - perl-base:i386          # winetricks
       - shared-mime-info:i386
       - unzip:i386              # winetricks
