@@ -78,6 +78,12 @@ fi
 # # We need to handle that case and reset $SNAP
 SNAP=`echo $SNAP | sed -e "s|/var/lib/snapd||g"`
 
+NOTICE="The Track Mania Nations Forever snap is experimental and built
+with development releases of upstream WINE and may not function as
+expected.\n\nIf you encounter issues please report them on the Track
+Mania Nations Forever snap issue tracker:
+\n\nhttps://github.com/Snapcrafters/tmnationsforever"
+
 export WINEARCH="win32"
 if [ "${WINEARCH}" == "win32" ]; then
   ARCH="i386-linux-gnu"
@@ -192,8 +198,7 @@ fi
 # Initialise wine
 if [ ! -f "${WINEPREFIX}/drive_c/windows/win.ini" ]; then
   # Splash
-  yad --window-icon="${SNAP}/meta/gui/tmnationsforever.png" --timeout=15 --timeout-indicator=bottom --image="${SNAP}/meta/gui/tmnationsforever.png" --no-escape --center --no-buttons --splash &
-
+  yad --window-icon="${SNAP}/meta/gui/tmnationsforever.png" --timeout=15 --timeout-indicator=bottom --text="${NOTICE}" --no-escape --width=460 --center --no-buttons --splash &
   # Create the WINE environment
   env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" wineboot --init 2>&1 | \
   yad --progress --title="Preparing Windows environment" --width=400 --center --no-buttons --auto-close --auto-kill --on-top --pulsate
