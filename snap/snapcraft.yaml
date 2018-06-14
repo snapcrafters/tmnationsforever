@@ -122,10 +122,13 @@ parts:
     plugin: nil
     build-attributes:
       - no-system-libraries
+    build-packages:
+      - dpkg
+      - wget
     override-build: |
       snapcraftctl build
 
-      WINE_VER=3.10.0
+      WINE_VER="3.10.0"
 
       # wget and dpkg extract the wine debs
       DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel-i386_${WINE_VER}~xenial_i386.deb \
@@ -140,8 +143,10 @@ parts:
         rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
       done
 
-      # Organise and cleanup
+      # Organise
       cp -a ${SNAPCRAFT_PART_INSTALL}/opt/wine-devel/* ${SNAPCRAFT_PART_INSTALL}/
+
+      # Cleanup
       rm -rf ${SNAPCRAFT_PART_INSTALL}/opt
       rm -rf ${SNAPCRAFT_PART_INSTALL}/share/applications
       rm -rf ${SNAPCRAFT_PART_INSTALL}/share/man
@@ -225,8 +230,6 @@ parts:
     build-attributes:
       - no-system-libraries
     source: snap/scripts
-    build-packages:
-      - wget
     organize:
       'sommelier': bin/
       'winetricks': bin/
