@@ -32,8 +32,8 @@ function launch_app() {
   # If we don't change into the program directory some assets may not be found
   cd "${WINE_DIR}"
 
-  # Only use virtual desktop if we're running Xorg
-  if [ "${XDG_SESSION_TYPE}" == "x11" ]; then
+  # Only use virtual desktop if it has been requested and we're running Xorg
+  if [ "${XDG_SESSION_TYPE}" == "x11" ] && [ ${WINEVIRTDESKTOP} -eq 1 ]; then
     # Get the native resolution of the primary display.
     # Creating a virtual desktop the same size will eliminate bugs when
     # switching from fullscreen to windowed mode.
