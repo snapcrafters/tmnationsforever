@@ -177,6 +177,10 @@ fi
 
 # Initialise wine
 if [ ! -f "${WINEPREFIX}/drive_c/windows/win.ini" ]; then
+  # Splash
+  yad --window-icon="${SNAP}/meta/gui/tmnationsforever.png" --timeout=15 --timeout-indicator=bottom --image="${SNAP}/meta/gui/tmnationsforever.png" --no-escape --center --no-buttons --splash &
+
+  # Create the WINE environment
   env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" wineboot --init 2>&1 | \
   yad --progress --title="Preparing Windows environment" --width=400 --center --no-buttons --auto-close --auto-kill --on-top --pulsate
   # Opt out of winetricks metrics - we ninja this to avoid dialogs
