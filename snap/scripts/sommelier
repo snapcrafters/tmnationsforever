@@ -3,7 +3,7 @@
 function install_app() {
   # Install additional requirements via winetricks here
   if [ -n "${TRICKS}" ]; then
-    for TRICK in "${TRICKS}"; do
+    for TRICK in ${TRICKS}; do
       env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINETRICKS}" --gui --unattended ${TRICK}
     done
   fi
