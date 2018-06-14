@@ -19,7 +19,7 @@ architectures:
 
 apps:
   tmnationsforever:
-    command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForeverLauncher.exe"
+    command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForever.exe"
     environment:
       WINEPREFIX: "$SNAP_USER_COMMON/.wine"
       INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
@@ -36,8 +36,8 @@ apps:
       - pulseaudio
       - wayland
       - x11
-  play:
-    command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForever.exe"
+  launcher:
+    command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForeverLauncher.exe"
     environment:
       WINEPREFIX: "$SNAP_USER_COMMON/.wine"
       LC_ALL: "C.UTF-8"
