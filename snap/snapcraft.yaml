@@ -107,6 +107,12 @@ parts:
     plugin: nil
     build-attributes:
       - no-system-libraries
+    build-packages:
+      # This snap is build on amd64 only
+      - on amd64:
+        - apt
+        - dpkg
+      - else fail
     override-build: |
       snapcraftctl build
       dpkg --add-architecture i386
