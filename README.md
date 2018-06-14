@@ -30,15 +30,22 @@ things you'll need to modify:
 
   * Change the meta data and `apps:` and `parts:` names from `tmnationsforever`.
   * Modify the `command:` to reference the executable the application/game should launch.
-  * If you can't redistrbute the application/game use `INSTALL_URL:` to reference a web accessible installer.
   * Modify the `install_app()` and `launch_app()` functions in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
-  * Modify the `NOTICE` in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
-  * If the application/game requires some winetricks to work then you can specify them via `TRICKS:` in the `environment:` of the main `command:`. For example:
+  * Modify the `TITLE` and `NOTICE` in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
+  * If you can't redistrbute the application/game use `INSTALL_URL:` in the `environment:` of the main `command:` to reference a web accessible installer.
+  * Some games require a virtual desktop to function correctly. Add `VIRTDESKTOP: 1` to the `environment:` of the main `command:` to enable virtual desktop or set it to `0` or remove it completely to disable a virtual desktop.
+  * Some applications/games require that WINE DLLs are overriden, you can specify then via `DLLOVERRIDES:` in the `environment:` of the main `command:`.
+  * If the application/game requires some winetricks to work then you can specify them via `TRICKS:` in the `environment:` of the main `command:`.
+
+Here's an example `environment:` that shows how to use some of the capabilities outlined above:
 
 ```
     environment:
       WINEPREFIX: "$SNAP_USER_COMMON/.wine"
+      DLLOVERRIDES: "mscoree,mshtml=" # Prevent pop-ups about Wine Mono and Wine Gecko
+      INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
       TRICKS: "winxp corefonts d3dx9_43"
+      VIRTDESKTOP: 1
       LC_ALL: "C.UTF-8"
 ```
 
