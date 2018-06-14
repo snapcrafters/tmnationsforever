@@ -1,5 +1,12 @@
 #!/bin/bash
 
+TITLE="TrackMania Nations Forever"
+NOTICE="The ${TITLE} snap is experimental, built
+with development releases of upstream WINE and may not function as
+expected.\n\nIf you encounter issues please report them on the
+${TITLE} snap issue tracker:
+\n\nhttps://github.com/Snapcrafters/tmnationsforever"
+
 function install_app() {
   # Install additional requirements via winetricks here
   if [ -n "${TRICKS}" ]; then
@@ -77,12 +84,6 @@ fi
 # On Fedora $SNAP is under /var and there is some magic to map it to /snap.
 # # We need to handle that case and reset $SNAP
 SNAP=`echo $SNAP | sed -e "s|/var/lib/snapd||g"`
-
-NOTICE="The TrackMania Nations Forever snap is experimental, built
-with development releases of upstream WINE and may not function as
-expected.\n\nIf you encounter issues please report them on the
-TrackMania Nations Forever snap issue tracker:
-\n\nhttps://github.com/Snapcrafters/tmnationsforever"
 
 export WINEARCH="win32"
 if [ "${WINEARCH}" == "win32" ]; then
@@ -213,7 +214,7 @@ if [ ! -f "${WINEPREFIX}/drive_c/windows/win.ini" ]; then
   fi
 else
   # Notification
-  notify-send --icon "${SNAP}/meta/gui/tmnationsforever.png" --expire-time=15000 "TrackMania Nations Forever" "${NOTICE}"
+  notify-send --icon "${SNAP}/meta/gui/tmnationsforever.png" --expire-time=15000 "${TITLE}" "${NOTICE}"
 fi
 
 # Launch wineboot/winecfg/winetricks if requested.
