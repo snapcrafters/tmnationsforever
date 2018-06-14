@@ -128,11 +128,13 @@ parts:
     override-build: |
       snapcraftctl build
 
+      WINE_REL="wine-devel"
+      WINE_ARCH="i386"
       WINE_VER="3.10.0"
 
       # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel-i386_${WINE_VER}~xenial_i386.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel_${WINE_VER}~xenial_i386.deb"
+      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
+                https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
 
       for DEB_URL in ${DEB_URLS}; do
         DEB=$(basename "${DEB_URL}")
@@ -144,7 +146,7 @@ parts:
       done
 
       # Organise
-      cp -a ${SNAPCRAFT_PART_INSTALL}/opt/wine-devel/* ${SNAPCRAFT_PART_INSTALL}/
+      cp -a ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/* ${SNAPCRAFT_PART_INSTALL}/
 
       # Cleanup
       rm -rf ${SNAPCRAFT_PART_INSTALL}/opt
