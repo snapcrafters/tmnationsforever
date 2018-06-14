@@ -2,7 +2,7 @@
 Type=Application
 Encoding=UTF-8
 Name=TmNationsForever
-Comment=Track Mania Nations Forever
+Comment=TrackMania Nations Forever
 Exec=tmnationsforever
 Icon=${SNAP}/meta/gui/tmnationsforever.png
 Categories=Game;
