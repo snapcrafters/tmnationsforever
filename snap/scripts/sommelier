@@ -78,7 +78,7 @@ fi
 # # We need to handle that case and reset $SNAP
 SNAP=`echo $SNAP | sed -e "s|/var/lib/snapd||g"`
 
-NOTICE="The Track Mania Nations Forever snap is experimental and built
+NOTICE="The Track Mania Nations Forever snap is experimental, built
 with development releases of upstream WINE and may not function as
 expected.\n\nIf you encounter issues please report them on the Track
 Mania Nations Forever snap issue tracker:
