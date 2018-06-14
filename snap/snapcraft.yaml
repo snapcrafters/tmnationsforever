@@ -195,6 +195,8 @@ parts:
     build-attributes:
       - no-system-libraries
     source: snap/scripts
+    build-packages:
+      - wget
     organize:
       'sommelier': bin/
       'winetricks': bin/
