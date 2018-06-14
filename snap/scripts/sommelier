@@ -33,7 +33,7 @@ function launch_app() {
   cd "${WINE_DIR}"
 
   # Only use virtual desktop if it has been requested and we're running Xorg
-  if [ "${XDG_SESSION_TYPE}" == "x11" ] && [ ${WINEVIRTDESKTOP} -eq 1 ]; then
+  if [ "${XDG_SESSION_TYPE}" == "x11" ] && [ "${VIRTDESKTOP}" == "1" ]; then
     # Get the native resolution of the primary display.
     # Creating a virtual desktop the same size will eliminate bugs when
     # switching from fullscreen to windowed mode.
@@ -90,6 +90,11 @@ if [ "${WINEARCH}" == "win32" ]; then
 else
   ARCH="x86_64-linux-gnu"
 fi
+
+if [ -n "${DLLOVERRIDES}" ]; then
+  export WINEDLLOVERRIDES="${DLLOVERRIDES}"
+fi
+
 export WINEVERPATH=$SNAP
 export WINESERVER=$SNAP/bin/wineserver
 export WINELOADER=$SNAP/bin/wine
@@ -97,8 +102,7 @@ export WINETRICKS=$SNAP/bin/winetricks
 export winepath=$SNAP/bin/winepath
 export WINEDLLPATH=$SNAP/lib/wine/fakedlls
 export WINEPREFIX="$SNAP_USER_COMMON/.wine"
-# Prevent the pop-ups about Wine Mono and Wine Gecko
-export WINEDLLOVERRIDES="mscoree,mshtml="
+
 #export WINEDEBUG=-all
 export LD_LIBRARY_PATH="$SNAP/lib:$SNAP/lib/$ARCH:$SNAP/usr/lib:$SNAP/usr/lib/$ARCH:$LD_LIBRARY_PATH"
 

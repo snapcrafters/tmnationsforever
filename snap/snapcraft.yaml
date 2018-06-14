@@ -22,8 +22,9 @@ apps:
     command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForever.exe"
     environment:
       WINEPREFIX: "$SNAP_USER_COMMON/.wine"
-      WINEVIRTDESKTOP: 1
+      DLLOVERRIDES: "mscoree,mshtml=" # Prevent pop-ups about Wine Mono and Wine Gecko
       INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
+      VIRTDESKTOP: 1
       LC_ALL: "C.UTF-8"
     plugs:
       - desktop
@@ -41,6 +42,9 @@ apps:
     command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForeverLauncher.exe"
     environment:
       WINEPREFIX: "$SNAP_USER_COMMON/.wine"
+      DLLOVERRIDES: "mscoree,mshtml=" # Prevent pop-ups about Wine Mono and Wine Gecko
+      INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
+      VIRTDESKTOP: 1
       LC_ALL: "C.UTF-8"
     plugs:
       - desktop
