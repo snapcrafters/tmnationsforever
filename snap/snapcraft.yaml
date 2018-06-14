@@ -53,6 +53,22 @@ apps:
       - pulseaudio
       - wayland
       - x11
+  wine:
+    command: bin/sommelier $SNAP/bin/wine
+    environment:
+      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
+    plugs:
+      - desktop
+      - desktop-legacy
+      - hardware-observe
+      - home
+      - joystick
+      - network
+      - network-bind
+      - opengl
+      - pulseaudio
+      - wayland
+      - x11
   wineboot:
     command: bin/sommelier $SNAP/bin/wineboot
     environment:

@@ -29,14 +29,19 @@ function launch_app() {
   mkdir -p "${WINEPREFIX}/drive_c/users/${USER}/My Documents/TmForever/Config"
   touch "${WINEPREFIX}/drive_c/users/${USER}/My Documents/TmForever/Config/GfxDevicePerfs.txt"
 
-  # Get the native resolution of the primary display.
-  # Creating a virtual desktop the same size will eliminate bugs when
-  # switching from fullscreen to windowed mode.
-  NATIVE_RES=$(xrandr -q | grep primary | cut -d' ' -f4 | cut -d'+' -f1)
-
   # If we don't change into the program directory some assets may not be found
   cd "${WINE_DIR}"
-  env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" explorer /desktop="virtual","${NATIVE_RES}" "${WINE_EXE}"
+
+  # Only use virtual desktop if we're running Xorg
+  if [ "${XDG_SESSION_TYPE}" == "x11" ]; then
+    # Get the native resolution of the primary display.
+    # Creating a virtual desktop the same size will eliminate bugs when
+    # switching from fullscreen to windowed mode.
+    NATIVE_RES=$(xrandr -q | grep primary | cut -d' ' -f4 | cut -d'+' -f1)
+    env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" explorer /desktop="virtual","${NATIVE_RES}" "${WINE_EXE}"
+  else
+    env WINEARCH="${WINEARCH}" WINEPREFIX="${WINEPREFIX}" "${WINELOADER}" "${WINE_EXE}"
+  fi
 }
 
 function prepend_dir() {
