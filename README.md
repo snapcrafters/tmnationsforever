@@ -32,7 +32,8 @@ modify:
   * Modify the `command:` to reference the executable the application/game should launch.
   * If you can't redistrbute the application/game use `INSTALL_URL:` to reference a web accessible installer.
   * Modify the `install_app()` and `launch_app()` functions in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
-  * If your application/game requires some winetricks to work then you can specify them via `TRICKS:` in the `environment:` of the main `command:`. For example:
+  * Modify the `NOTICE` in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
+  * If the application/game requires some winetricks to work then you can specify them via `TRICKS:` in the `environment:` of the main `command:`. For example:
 
 ```
     environment:
@@ -40,6 +41,8 @@ modify:
       TRICKS: "winxp corefonts d3dx9_43"
       LC_ALL: "C.UTF-8"
 ```
+
+
 
 One other point of interest is that `yad` is staged in the snap and a faux
 `zenity` script is included that execs `yad`. We do this because `yad` is
