@@ -119,7 +119,7 @@ parts:
 
       WINE_REL="wine-devel"
       WINE_ARCH="i386"
-      WINE_VER="3.9.0"
+      WINE_VER="3.10.0"
 
       # wget and dpkg extract the wine debs
       DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
@@ -201,6 +201,9 @@ parts:
       - samba-libs:i386
     override-build: |
       snapcraftctl build
+      rm -rf $SNAPCRAFT_PART_INSTALL/etc/init
+      rm -rf $SNAPCRAFT_PART_INSTALL/etc/init.d
+      rm -rf $SNAPCRAFT_PART_INSTALL/etc/logrotate.d
       rm -rf $SNAPCRAFT_PART_INSTALL/lib/x86_64-linux-gnu
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/x86_64-linux-gnu
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/apps
@@ -261,6 +264,7 @@ parts:
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/info
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/kde4
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/lintian
+      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/menu
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/man
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/perl5
       rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/pixmaps
