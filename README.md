@@ -9,9 +9,9 @@ distributions.</p>
 
 <p align="center">Published for <img src="http://anything.codes/slack-emoji-for-techies/emoji/tux.png" align="top" width="24" /> with :gift_heart: by Snapcrafters</p>
 
-<!-- <p align="center">
+<p align="center">
 <a href="https://build.snapcraft.io/user/snapcrafters/tmnationsforever"><img src="https://build.snapcraft.io/badge/snapcrafters/tmnationsforever.svg" alt="Snap Status"></a>
-</p> -->
+</p>
 
 ## Install
 
@@ -25,8 +25,8 @@ distributions.</p>
 ## Reusing this snap
 
 You can use this snap as a reference for creating snaps of other WINE
-compatible Windows applications. Here are the main things you'll need to
-modify:
+compatible 32-bit Windows applications or games. Here are the main
+things you'll need to modify:
 
   * Change the meta data and `apps:` and `parts:` names from `tmnationsforever`.
   * Modify the `command:` to reference the executable the application/game should launch.
@@ -42,11 +42,10 @@ modify:
       LC_ALL: "C.UTF-8"
 ```
 
+One other point of interest is that `yad` is staged in the snap and a
+faux `zenity` script is included that execs `yad`. We do this because
+`yad` is argument compatible with `zenity` but pulls far fewer package
+dependencies.
 
-
-One other point of interest is that `yad` is staged in the snap and a faux
-`zenity` script is included that execs `yad`. We do this because `yad` is
-argument compatible with `zenity` but pulls far fewer package dependencies.
-
-If you have any questions about creating snaps of WINE compatible Windows
-applications then [post in the Snapcraft forum](https://forum.snapcraft.io).
+If you have any questions about creating snaps of WINE compatible
+Windows applications then [post in the Snapcraft forum](https://forum.snapcraft.io).
