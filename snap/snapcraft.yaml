@@ -97,9 +97,11 @@ parts:
     override-build: |
       snapcraftctl build
 
+      WINE_VER=3.10.0
+
       # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel-i386_3.9.0~xenial_i386.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel_3.9.0~xenial_i386.deb"
+      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel-i386_${WINE_VER}~xenial_i386.deb \
+                https://dl.winehq.org/wine-builds/ubuntu/pool/main/wine-devel_${WINE_VER}~xenial_i386.deb"
 
       for DEB_URL in ${DEB_URLS}; do
         DEB=$(basename "${DEB_URL}")
@@ -125,7 +127,7 @@ parts:
     build-attributes:
       - no-system-libraries
     stage-packages:
-      ### Depends from wine-devel-i386_3.9.0~xenial_i386.deb debian/control
+      ### Depends from wine-devel-i386_x.y.z~xenial_i386.deb debian/control
       - libasound2:i386
       - libc6:i386
       - libglib2.0-0:i386
@@ -142,7 +144,7 @@ parts:
       - libxext6:i386
       - libxml2:i386
       - zlib1g:i386
-      ### Recommends from wine-devel-i386_3.9.0~xenial_i386.deb debian/control
+      ### Recommends from wine-devel-i386_x.y.z~xenial_i386.deb debian/control
       #- libcapi20-3:i386
       #- libcups2:i386
       - libdbus-1-3:i386
@@ -210,8 +212,8 @@ parts:
       - shared-mime-info:i386
       - unzip:i386              # winetricks
       - wget:i386               # winetricks
+      - x11-xserver-utils:i386  # sommelier
       - yad:i386                # winetricks
-      - x11-xserver-utils:i386  # for xrandr to set virtual desktop
     override-build: |
       snapcraftctl build
       rm -rf $SNAPCRAFT_PART_INSTALL/etc/init
