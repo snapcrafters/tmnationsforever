@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 TITLE="TrackMania Nations Forever"
 NOTICE="The ${TITLE} snap is experimental, built
 with development releases of upstream WINE and may not function as
