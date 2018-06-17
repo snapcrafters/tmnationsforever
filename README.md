@@ -30,6 +30,7 @@ things you'll need to modify:
 
   * Change the meta data and `apps:` and `parts:` names from `tmnationsforever`.
   * Modify the `command:` to reference the executable the application/game should launch.
+  * If you can't redistrbute the application/game use `INSTALL_URL:` to reference a web accessible installer.
   * Modify the `install_app()` and `launch_app()` functions in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
   * Modify the `TITLE` and `NOTICE` in [`snap/scripts/sommelier`](snap/scripts/sommelier) to suit the application/game you're snapping.
   * If you can't redistrbute the application/game use `INSTALL_URL:` in the `environment:` of the main `command:` to reference a web accessible installer.
