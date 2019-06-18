@@ -16,6 +16,7 @@ confinement: strict
 architectures:
   - build-on: amd64
     run-on: [amd64, i386]
+base: core
 
 apps:
   tmnationsforever:
@@ -94,8 +95,6 @@ apps:
 parts:
   enable-i386:
     plugin: nil
-    build-attributes:
-      - no-system-libraries
     build-packages:
       # This snap is build on amd64 only
       - on amd64:
@@ -109,8 +108,6 @@ parts:
 
   wine:
     plugin: nil
-    build-attributes:
-      - no-system-libraries
     build-packages:
       - dpkg
       - wget
@@ -122,8 +119,8 @@ parts:
       WINE_VER="3.10.0"
 
       # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/pool/main/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
+      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/dists/xenial/main/binary-${WINE_ARCH}/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
+                https://dl.winehq.org/wine-builds/ubuntu/dists/xenial/main/binary-${WINE_ARCH}/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
 
       for DEB_URL in ${DEB_URLS}; do
         DEB=$(basename "${DEB_URL}")
@@ -148,8 +145,6 @@ parts:
 
   wine-runtime:
     plugin: nil
-    build-attributes:
-      - no-system-libraries
     stage-packages:
       ### Depends from wine-devel-i386_x.y.z~xenial_i386.deb debian/control
       - libasound2:i386
@@ -221,9 +216,7 @@ parts:
 
   tmnationsforever:
     plugin: dump
-    build-attributes:
-      - no-system-libraries
-    source: snap/scripts
+    source: scripts
     organize:
       'sommelier': bin/
       'winetricks': bin/
