@@ -38,6 +38,7 @@ apps:
       - network-bind
       - opengl
       - audio-playback
+      - joystick
   # The wine command can be used to run applications inside the wine
   # environment that this snap uses.
   #
@@ -70,6 +71,7 @@ plugs:
     interface: content
     target: $SNAP/wine-runtime
     default-provider: wine-platform-runtime
+  # We use Wine 3 because the framerate is higher compared to newer versions
   wine-3-stable:
     interface: content
     target: $SNAP/wine-platform
