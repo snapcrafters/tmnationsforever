@@ -21,10 +21,14 @@ snap connect tmnationsforever:joystick
 
 ([Don't have snapd installed?](https://snapcraft.io/docs/core/install))
 
-![Track Mania Nations Forever](screenshot.png?raw=true "Track Mania Nations Forever")
+![TrackMania Nations Forever](screenshot.png?raw=true "TrackMania Nations Forever")
 
 ## Reusing this snap
 
-You can use this snap as a reference for creating snaps of other Windows applications. See the [sommelier-core](https://github.com/snapcrafters/sommelier-core) for more information.
+You can use this snap as a reference for creating snaps of other Windows applications. See the [sommelier-core](https://github.com/snapcrafters/sommelier-core) repo for more information on how to snap a Windows application.
 
 If you have any questions about creating snaps of Windows applications then [post in the Snapcraft forum](https://forum.snapcraft.io).
+
+## License
+
+This snap manifest is released under the GPLv2 license. TrackMania Nations Forever itself is a proprietary application owned by Nadeo.
