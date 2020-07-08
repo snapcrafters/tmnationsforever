@@ -23,7 +23,6 @@ architectures:
 
 environment:
   WINEDLLOVERRIDES: "$WINEDLLOVERRIDES;mscoree,mshtml="    # Prevent pop-ups about Wine Mono and Wine Gecko
-  SNAP_SOMMELIER_STRICT: "1"                               # Make Sommelier exit when unset variable is used. (useful to find bugs in sommelier)
 
 apps:
   tmnationsforever:
@@ -71,7 +70,7 @@ plugs:
     interface: content
     target: $SNAP/wine-runtime
     default-provider: wine-platform-runtime
-  wine-5-stable:
+  wine-3-stable:
     interface: content
     target: $SNAP/wine-platform
-    default-provider: wine-platform-5-stable
+    default-provider: wine-platform-3-stable
