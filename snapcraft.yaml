@@ -14,6 +14,7 @@ description: |
 
   *Note: This Windows application runs on Linux using the Wine compatibility layer.*
 grade: stable
+icon: snap/gui/tmnationsforever.png
 
 confinement: strict
 base: core18
