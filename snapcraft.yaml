@@ -33,6 +33,7 @@ apps:
       RUN_EXE: "C:/Program Files (x86)/TmNationsForever/TmForever.exe"
       INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
       INSTALL_FLAGS: "/silent"
+      SOMMELIER_VIRTDESKTOP: 1
     plugs:
       - home
       - network
@@ -62,7 +63,7 @@ apps:
 parts:
   # The sommelier script helps you snap Windows applications using Wine. It 
   # initializes and configures Wine and installs the Windows application.
-  sommelier:
+  sommelier-core:
     plugin: make
     source: https://github.com/snapcrafters/sommelier-core.git
     source-branch: "1.0"
