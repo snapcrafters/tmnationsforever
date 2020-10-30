@@ -1,269 +1,82 @@
 name: tmnationsforever
+title: TrackMania Nations Forever
 version: '2.11.26'
-summary: TrackMania Nations Forever
+summary: The most popular online PC racing game.
 description: |
- The most popular online PC racing game. It fuels 7 different racing
- environments; hundreds of thousands of tracks and millions of players to
- compete with. You can download the car you are dreaming of, paint it, drive it
- through insane tracks made of loopings, ramps and off roads. It is all about
- you, your driving skills and the track in front of you.
- .
- Just to make sure we understand each other: this is pure arcade driving
- madness.
+  The most popular online PC racing game. It fuels 7 different racing
+  environments; hundreds of thousands of tracks and millions of players to
+  compete with. You can download the car you are dreaming of, paint it, drive it
+  through insane tracks made of loopings, ramps and off roads. It is all about
+  you, your driving skills and the track in front of you.
+  .
+  Just to make sure we understand each other: this is pure arcade driving
+  madness.
 
+  *Note: This Windows application runs on Linux using the Wine compatibility layer.*
 grade: stable
+icon: snap/gui/tmnationsforever.png
+
 confinement: strict
+base: core18
+
 architectures:
   - build-on: amd64
-    run-on: [amd64, i386]
-base: core
+  - build-on: i386
+
+environment:
+  WINEDLLOVERRIDES: "$WINEDLLOVERRIDES;mscoree,mshtml="    # Prevent pop-ups about Wine Mono and Wine Gecko
 
 apps:
   tmnationsforever:
-    command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForever.exe"
+    extensions: [ gnome-3-28 ]
+    command: bin/sommelier run-exe
     environment:
-      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
-      DLLOVERRIDES: "mscoree,mshtml=" # Prevent pop-ups about Wine Mono and Wine Gecko
+      RUN_EXE: "C:/Program Files (x86)/TmNationsForever/TmForever.exe"
       INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
-      VIRTDESKTOP: 1
-      LC_ALL: "C.UTF-8"
+      INSTALL_FLAGS: "/silent"
+      SOMMELIER_VIRTDESKTOP: 1
     plugs:
-      - desktop
-      - desktop-legacy
-      - hardware-observe
       - home
-      - joystick
       - network
       - network-bind
       - opengl
-      - pulseaudio
-      - wayland
-      - x11
-  launcher:
-    command: bin/sommelier "$WINEPREFIX/drive_c/Program Files/TmNationsForever/TmForeverLauncher.exe"
-    environment:
-      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
-      DLLOVERRIDES: "mscoree,mshtml=" # Prevent pop-ups about Wine Mono and Wine Gecko
-      INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
-      VIRTDESKTOP: 1
-      LC_ALL: "C.UTF-8"
-    plugs:
-      - desktop
-      - desktop-legacy
-      - hardware-observe
-      - home
+      - audio-playback
       - joystick
+  # The wine command can be used to run applications inside the wine
+  # environment that this snap uses.
+  #
+  # For example, users can configure the wine environment of this snap
+  # by running `myapp.wine winecfg`.
+  wine:
+    extensions: [ gnome-3-28 ]
+    command: bin/sommelier
+    plugs:
+      - home
       - network
-      - network-bind
-      - opengl
-      - pulseaudio
-      - wayland
-      - x11
-  wineboot:
-    command: bin/sommelier $SNAP/bin/wineboot
-    environment:
-      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
-    plugs:
-      - desktop
-      - desktop-legacy
-      - pulseaudio
-      - wayland
-      - x11
-  winecfg:
-    command: bin/sommelier $SNAP/bin/winecfg
-    environment:
-      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
-    plugs:
-      - desktop
-      - desktop-legacy
-      - pulseaudio
-      - wayland
-      - x11
+  # The winetricks command can be used to run winetricks inside the wine
+  # environment that this snap uses.
   winetricks:
-    command: bin/sommelier $SNAP/bin/winetricks prefix="$WINEPREFIX"
-    environment:
-      WINEPREFIX: "$SNAP_USER_COMMON/.wine"
-      LC_ALL: "C.UTF-8"
+    extensions: [ gnome-3-28 ]
+    command: bin/sommelier winetricks
     plugs:
-      - desktop
-      - desktop-legacy
       - network
-      - pulseaudio
-      - wayland
-      - x11
 
 parts:
-  enable-i386:
-    plugin: nil
-    build-packages:
-      # This snap is build on amd64 only
-      - on amd64:
-        - apt
-        - dpkg
-      - else fail
-    override-build: |
-      snapcraftctl build
-      dpkg --add-architecture i386
-      apt update
+  # The sommelier script helps you snap Windows applications using Wine. It 
+  # initializes and configures Wine and installs the Windows application.
+  sommelier-core:
+    plugin: make
+    source: https://github.com/snapcrafters/sommelier-core.git
+    source-branch: "1.0"
 
-  wine:
-    plugin: nil
-    build-packages:
-      - dpkg
-      - wget
-    override-build: |
-      snapcraftctl build
-
-      WINE_REL="wine-devel"
-      WINE_ARCH="i386"
-      WINE_VER="3.21.0"
-
-      # wget and dpkg extract the wine debs
-      DEB_URLS="https://dl.winehq.org/wine-builds/ubuntu/dists/xenial/main/binary-${WINE_ARCH}/${WINE_REL}-${WINE_ARCH}_${WINE_VER}~xenial_${WINE_ARCH}.deb \
-                https://dl.winehq.org/wine-builds/ubuntu/dists/xenial/main/binary-${WINE_ARCH}/${WINE_REL}_${WINE_VER}~xenial_${WINE_ARCH}.deb"
-
-      for DEB_URL in ${DEB_URLS}; do
-        DEB=$(basename "${DEB_URL}")
-        echo "Downloading ${DEB_URL}..."
-        wget --quiet "${DEB_URL}" -O "${SNAPCRAFT_PART_INSTALL}/${DEB}"
-        echo "Unpacking ${DEB}..."
-        dpkg -x "${SNAPCRAFT_PART_INSTALL}/${DEB}" ${SNAPCRAFT_PART_INSTALL}
-        rm -f "${SNAPCRAFT_PART_INSTALL}/${DEB}"
-      done
-
-      # Organise
-      cp -a ${SNAPCRAFT_PART_INSTALL}/opt/${WINE_REL}/* ${SNAPCRAFT_PART_INSTALL}/
-
-      # Cleanup
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/opt
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/share/applications
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/share/man
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/doc
-      rm -rf ${SNAPCRAFT_PART_INSTALL}/usr/share/lintian
-    after:
-      - enable-i386
-
+# These plugs are used to connect the snap to the wine runtime.
+plugs:
   wine-runtime:
-    plugin: nil
-    stage-packages:
-      ### Depends from wine-devel-i386_x.y.z~xenial_i386.deb debian/control
-      - libasound2:i386
-      - libc6:i386
-      - libglib2.0-0:i386
-      #- libgphoto2-6:i386
-      - libgstreamer-plugins-base1.0-0:i386
-      - liblcms2-2:i386
-      - libldap-2.4-2:i386
-      - libmpg123-0:i386
-      - libncurses5:i386
-      - libopenal1:i386
-      - libpcap0.8:i386
-      - libpulse0:i386
-      - libudev1:i386
-      - libxext6:i386
-      - libxml2:i386
-      - zlib1g:i386
-      ### Recommends from wine-devel-i386_x.y.z~xenial_i386.deb debian/control
-      #- libcapi20-3:i386
-      #- libcups2:i386
-      - libdbus-1-3:i386
-      - libfontconfig1:i386
-      - libfreetype6:i386
-      - libglu1-mesa:i386
-      - libgnutls30:i386
-      - libgsm1:i386
-      - libgssapi-krb5-2:i386
-      - libjpeg8:i386
-      #- libodbc1:i386
-      - libosmesa6:i386
-      - libpng12-0:i386
-      #- libsane:i386
-      - libsdl2-2.0-0:i386
-      - libtiff5:i386
-      - libv4l-0:i386
-      - libvulkan1:i386
-      - libxcomposite1:i386
-      - libxcursor1:i386
-      - libxfixes3:i386
-      - libxi6:i386
-      - libxinerama1:i386
-      - libxrandr2:i386
-      - libxrender1:i386
-      - libxslt1.1:i386
-      - libxxf86vm1:i386
-      # Required for authentication - Observed in Steam and Track Mania
-      - winbind:i386
-      - samba-libs:i386
-    override-build: |
-      snapcraftctl build
-      rm -rf $SNAPCRAFT_PART_INSTALL/etc/init
-      rm -rf $SNAPCRAFT_PART_INSTALL/etc/init.d
-      rm -rf $SNAPCRAFT_PART_INSTALL/etc/logrotate.d
-      rm -rf $SNAPCRAFT_PART_INSTALL/lib/x86_64-linux-gnu
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/x86_64-linux-gnu
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/apps
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/applications
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/bug
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/doc
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/doc-base
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/debhelper
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/lintian
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/man
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/pixmaps
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/pkgconfig
-    after:
-      - enable-i386
-
-  tmnationsforever:
-    plugin: dump
-    source: scripts
-    organize:
-      'sommelier': bin/
-      'winetricks': bin/
-      'zenity': bin/
-    stage-packages:
-      - cabextract:i386         # winetricks
-      - libgdk-pixbuf2.0-0:i386 # yad
-      - libgtk-3-0:i386         # yad
-      - libnotify4:i386         # yad
-      - libnotify-bin:i386      # sommelier
-      - perl-base:i386          # winetricks
-      - shared-mime-info:i386
-      - unzip:i386              # winetricks
-      - wget:i386               # winetricks
-      - x11-xserver-utils:i386  # sommelier
-      - yad:i386                # winetricks
-    override-build: |
-      snapcraftctl build
-      rm -rf $SNAPCRAFT_PART_INSTALL/etc/init
-      rm -rf $SNAPCRAFT_PART_INSTALL/etc/init.d
-      rm -rf $SNAPCRAFT_PART_INSTALL/etc/logrotate.d
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/bin/fc-*
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/bin/gtk-*
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/dconf/dconf-service
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/glib-networking/glib-pacrunner
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/GConf
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/aclocal
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/apport
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/apps
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/bash-completion
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/bug
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/debhelper
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/doc
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/doc-base
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/icons/Adwaita
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/icons/Humanity*
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/icons/LoginIcons
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/icons/ubuntu-mono*
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/info
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/kde4
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/lintian
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/menu
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/man
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/perl5
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/pixmaps
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/share/pkgconfig
-      rm -rf $SNAPCRAFT_PART_INSTALL/lib/x86_64-linux-gnu
-      rm -rf $SNAPCRAFT_PART_INSTALL/usr/lib/x86_64-linux-gnu
-    after:
-      - enable-i386
+    interface: content
+    target: $SNAP/wine-runtime
+    default-provider: wine-platform-runtime
+  # We use Wine 3 because the framerate is higher compared to newer versions
+  wine-3-stable:
+    interface: content
+    target: $SNAP/wine-platform
+    default-provider: wine-platform-3-stable
