@@ -21,7 +21,6 @@ base: core18
 
 architectures:
   - build-on: amd64
-  - build-on: i386
 
 environment:
   WINEDLLOVERRIDES: "$WINEDLLOVERRIDES;mscoree,mshtml="    # Prevent pop-ups about Wine Mono and Wine Gecko
