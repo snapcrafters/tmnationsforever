@@ -30,7 +30,7 @@ apps:
     extensions: [ gnome-3-28 ]
     command: bin/sommelier run-exe
     environment:
-      RUN_EXE: "C:/Program Files (x86)/TmNationsForever/TmForever.exe"
+      RUN_EXE: "C:/Program Files (x86)/TmNationsForever/TmForeverLauncher.exe"
       INSTALL_URL: "http://files.trackmaniaforever.com/tmnationsforever_setup.exe"
       INSTALL_FLAGS: "/silent"
       SOMMELIER_VIRTDESKTOP: 1
