@@ -3,16 +3,23 @@ title: TrackMania Nations Forever
 version: '2.11.26'
 summary: The most popular online PC racing game.
 description: |
-  The most popular online PC racing game. It fuels 7 different racing
-  environments; hundreds of thousands of tracks and millions of players to
-  compete with. You can download the car you are dreaming of, paint it, drive it
-  through insane tracks made of loopings, ramps and off roads. It is all about
-  you, your driving skills and the track in front of you.
-  .
-  Just to make sure we understand each other: this is pure arcade driving
-  madness.
+  The most popular online PC racing game. It fuels 7 different racing environments; hundreds of thousands of tracks and millions of players to compete with. You can download the car you are dreaming of, paint it, drive it through insane tracks made of loopings, ramps and off roads. It is all about you, your driving skills and the track in front of you.
+  
+  Just to make sure we understand each other: this is pure arcade driving madness.
+  
+  **This snap uses Wine**
 
-  *Note: This Windows application runs on Linux using the Wine compatibility layer.*
+  This snap contains a Windows application. It runs on Linux using the Wine compatibility layer. Some features may not work correctly due to the differences between Windows and Wine.
+  
+  **Authors**
+  
+  This snap package is maintained by the Snapcrafters community. It is not necessarily endorsed or officially maintained by the developers of the application itself.
+website: https://www.trackmaniaforever.com/
+contact: https://github.com/snapcrafters/tmnationsforever/issues
+issues: https://github.com/snapcrafters/tmnationsforever/issues
+source-code: https://github.com/snapcrafters/tmnationsforever
+license: Proprietary
+
 grade: stable
 icon: snap/gui/tmnationsforever.png
 
